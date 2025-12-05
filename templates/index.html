@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Diagnostic Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .page-section { display: none; animation: fadeIn 0.5s; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .verbose-loader { max-width: 600px; margin: 4rem auto; text-align: center; }
+        .log-box { background: #1f2937; color: #10b981; font-family: monospace; padding: 1rem; border-radius: 8px; text-align: left; height: 150px; overflow-y: auto; margin-top: 1rem; border: 1px solid #374151; }
+        .log-line { margin: 2px 0; font-size: 0.9rem; }
+        /* Style tambahan */
+        .section-title { font-size: 1.5rem; font-weight: 800; color: #1f2937; margin-bottom: 2rem; text-align: center; margin-top: 4rem; }
+        .steps-grid, .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .step-card, .team-card { background: white; border: 1px solid #e5e7eb; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); text-align: center; transition: all 0.3s; }
+        .step-card:hover, .team-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
+        .step-icon, .team-avatar { width: 3rem; height: 3rem; margin: 0 auto 1rem; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .step-title, .team-name { font-weight: 700; margin-bottom: 0.5rem; color: #374151; font-size: 1.1rem; }
+        .step-description, .team-nrp { font-size: 0.875rem; color: #6b7280; }
+        .credits-info-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; text-align: center; }
+        .info-item { display: flex; flex-direction: column; align-items: center; }
+        .info-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 600; margin-bottom: 0.25rem; }
+        .info-value { font-weight: 700; color: #1f2937; font-size: 1rem; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <div class="logo-container flex items-center gap-2" onclick="showHome()" style="cursor:pointer;">
+                <div class="logo-icon text-blue-600"><i data-feather="activity"></i></div>
+                <h1 class="logo-text text-xl font-bold">Medical Diagnostic Hub</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 py-8">
+        <section id="home-section" class="page-section active">
+            <div class="hero-section text-center mb-10">
+                <h1 class="hero-title text-4xl font-bold mb-2">Medical Diagnostic Hub</h1>
+                <p class="hero-subtitle text-gray-600">Unified AI Analysis for Orthopedics, Neurology, Dermatology, and Cardiology</p>
+            </div>
+
+            <div class="services-grid grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                
+                <!-- 1. Image Analysis -->
+                <div class="service-card border p-6 rounded-lg shadow hover:shadow-lg transition bg-white">
+                    <div class="service-header flex items-center gap-2 mb-4">
+                        <div class="service-icon xray text-blue-500"><i data-feather="image"></i></div>
+                        <h2 class="service-title text-xl font-semibold">Image Analysis</h2>
+                    </div>
+                    <p class="service-description text-gray-600 mb-6 text-sm h-16">
+                        Upload X-Ray, MRI, or Skin Photos. Supports Bone Fracture, Brain Tumor, and Scabies detection.
+                    </p>
+                    <button onclick="openSingleModal('bone')" class="service-button w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex justify-center items-center gap-2">
+                        <i data-feather="upload"></i> Upload Image/DICOM
+                    </button>
+                </div>
+
+                <!-- 2. ECG Analysis -->
+                <div class="service-card border p-6 rounded-lg shadow hover:shadow-lg transition bg-white border-t-4 border-t-red-500">
+                    <div class="service-header flex items-center gap-2 mb-4">
+                        <div class="service-icon text-red-500"><i data-feather="activity"></i></div>
+                        <h2 class="service-title text-xl font-semibold">ECG Analysis</h2>
+                    </div>
+                    <p class="service-description text-gray-600 mb-6 text-sm h-16">
+                        Upload ECG Data (.ecg, .txt, .csv, .dcm). Configure Grid, Rows, and Patient Info display.
+                    </p>
+                    <button onclick="openECGModal()" class="service-button w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 flex justify-center items-center gap-2">
+                        <i data-feather="settings"></i> Configure & Upload ECG
+                    </button>
+                </div>
+
+                <!-- 3. Batch Analysis -->
+                <div class="service-card border p-6 rounded-lg shadow hover:shadow-lg transition bg-white">
+                    <div class="service-header flex items-center gap-2 mb-4">
+                        <div class="service-icon mri text-indigo-500"><i data-feather="grid"></i></div>
+                        <h2 class="service-title text-xl font-semibold">Batch DICOM</h2>
+                    </div>
+                    <p class="service-description text-gray-600 mb-6 text-sm h-16">
+                        Process complete DICOM studies or multiple files at once.
+                    </p>
+                    <button onclick="startBatchFlow()" class="service-button w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 flex justify-center items-center gap-2">
+                        <i data-feather="server"></i> Start Batch Process
+                    </button>
+                </div>
+
+                <!-- 4. [BARU] Live Skin Analysis -->
+                <div class="service-card border p-6 rounded-lg shadow hover:shadow-lg transition bg-white border-t-4 border-t-green-500">
+                    <div class="service-header flex items-center gap-2 mb-4">
+                        <div class="service-icon text-green-500"><i data-feather="camera"></i></div>
+                        <h2 class="service-title text-xl font-semibold">Live Skin Cam</h2>
+                    </div>
+                    <p class="service-description text-gray-600 mb-6 text-sm h-16">
+                        Deteksi penyakit kulit (Scabies) secara real-time menggunakan kamera perangkat Anda.
+                    </p>
+                    <button onclick="openLiveSkinModal()" class="service-button w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 flex justify-center items-center gap-2">
+                        <i data-feather="video"></i> Start Live Cam
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- How It Works & Credits (Sama seperti sebelumnya) -->
+            <section class="how-it-works">
+                <h2 class="section-title">Cara Kerja</h2>
+                <div class="steps-grid">
+                    <div class="step-card"><div class="step-icon"><i data-feather="upload"></i></div><h3 class="step-title">Upload/Scan</h3><p class="step-description">Upload file atau gunakan kamera</p></div>
+                    <div class="step-card"><div class="step-icon"><i data-feather="cpu"></i></div><h3 class="step-title">Analisis AI</h3><p class="step-description">AI mendeteksi pola penyakit</p></div>
+                    <div class="step-card"><div class="step-icon"><i data-feather="file-text"></i></div><h3 class="step-title">Hasil Medis</h3><p class="step-description">Terima laporan & rekomendasi</p></div>
+                </div>
+            </section>
+
+            <section class="credits-section">
+                <h2 class="section-title">Tim Pengembang</h2>
+                <div class="credits-info-box">
+                    <div class="info-item"><span class="info-label">Dosen Pengampu</span><span class="info-value">Sritrusta Sukaridhoto,ST., Ph.D.</span></div>
+                    <div class="info-item"><span class="info-label">Mata Kuliah</span><span class="info-value">Workshop Artificial Intelligence</span></div>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">Nasywa Labibah R.</h4><span class="team-nrp">NRP. 5323600003</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">Lukman Hakim B.</h4><span class="team-nrp">NRP. 5323600004</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">M. Mahasibyl 'aly</h4><span class="team-nrp">NRP. 5323600008</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">M. Satria Halim W.</h4><span class="team-nrp">NRP. 5323600010</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">Keiko Hana Seika</h4><span class="team-nrp">NRP. 5323600020</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">Salsabilla Nur A.</h4><span class="team-nrp">NRP. 5323600021</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">Pipit Handayani T.</h4><span class="team-nrp">NRP. 5323600023</span></div></div>
+                    <div class="team-card"><div class="team-avatar"><i data-feather="user"></i></div><div class="team-details"><h4 class="team-name">Harish Imaduddin M.</h4><span class="team-nrp">NRP. 5323600028</span></div></div>
+                </div>
+            </section>
+        </section>
+
+        <!-- (Loading & Result Section - Sama) -->
+        <section id="batch-loading-section" class="page-section">
+            <div class="verbose-loader bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                <div class="spinner-border text-primary mb-4 mx-auto border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" style="width: 3rem; height: 3rem;"></div>
+                <h2 class="text-2xl font-bold mb-2">Processing...</h2>
+                <div class="w-full bg-gray-200 rounded-full h-4 mb-4 dark:bg-gray-700"><div id="batch-progress-bar" class="bg-indigo-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div></div>
+                <div class="log-box text-xs md:text-sm shadow-inner" id="verbose-logs"></div>
+            </div>
+        </section>
+        <section id="batch-results-section" class="page-section">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold">Batch Results</h2>
+                <button onclick="showHome()" class="px-4 py-2 bg-gray-100 rounded">Back to Home</button>
+            </div>
+            <div id="batch-grid" class="batch-grid grid gap-4 grid-cols-2 md:grid-cols-4"></div>
+        </section>
+    </main>
+
+    <!-- [GENERIC IMAGE MODAL] -->
+    <div id="singleModal" class="modal fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
+        <div class="modal-content bg-white rounded-lg p-6 w-full max-w-lg">
+            <div class="modal-header flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Image Analysis</h3>
+                <button onclick="closeModal('singleModal')" class="modal-close hover:text-red-500"><i data-feather="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2 text-gray-700">Type</label>
+                    <select id="singleType" class="block w-full bg-gray-50 border border-gray-300 py-2 px-3 rounded">
+                        <option value="bone">Bone Anomaly</option>
+                        <option value="brain">Brain Tumor</option>
+                        <option value="skin">Skin Disease</option>
+                    </select>
+                </div>
+                <div class="upload-zone border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500" id="single-dropzone">
+                    <div class="upload-icon text-gray-400 mb-2 flex justify-center"><i data-feather="image" class="w-10 h-10"></i></div>
+                    <h4 class="font-bold text-gray-700">Drop Image Here</h4>
+                    <input type="file" id="singleInput" class="hidden" accept="image/*,.dcm,application/dicom">
+                    <div class="flex gap-2 justify-center mt-4">
+                        <button id="browseBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 relative z-10">Browse</button>
+                        <!-- (Tombol Webcam di sini dihapus karena sudah ada Card khusus) -->
+                    </div>
+                </div>
+                <div id="singlePreview" class="preview-container mt-4 hidden border rounded p-4">
+                    <div class="flex justify-between items-center mb-2"><h5 class="font-bold">Preview</h5><button onclick="clearSinglePreview()" class="text-gray-500"><i data-feather="trash-2"></i></button></div>
+                    <div id="singlePreviewContent" class="text-center py-2"></div>
+                    <button onclick="processSingle()" class="analyze-btn mt-2 w-full py-2 bg-blue-600 text-white rounded">Analyze Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [ECG MODAL] -->
+    <div id="ecgModal" class="modal fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
+        <div class="modal-content bg-white rounded-lg p-6 w-full max-w-lg border-t-4 border-red-500">
+            <div class="modal-header flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-red-700 flex items-center gap-2"><i data-feather="activity"></i> ECG Configuration</h3>
+                <button onclick="closeModal('ecgModal')" class="modal-close hover:text-red-500"><i data-feather="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="bg-red-50 p-4 rounded-lg mb-4 border border-red-100">
+                    <h4 class="font-bold text-red-800 text-sm mb-3">Visualization Options</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">View Window (Seconds)</label>
+                                <select id="ecgWindow" class="w-full border rounded p-1 text-sm"><option value="full">Full Record</option><option value="3" selected>3 Seconds (Zoom)</option><option value="5">5 Seconds</option></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Rows</label>
+                                <select id="ecgRows" class="w-full border rounded p-1 text-sm"><option value="1" selected>1 Row</option><option value="2">2 Rows</option><option value="3">3 Rows</option></select>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center gap-2">
+                            <label class="flex items-center text-sm gap-2 cursor-pointer"><input type="checkbox" id="ecgTrim" checked class="form-checkbox text-red-600"><span>Auto-Trim Start</span></label>
+                            <label class="flex items-center text-sm gap-2 cursor-pointer"><input type="checkbox" id="ecgGrid" checked class="form-checkbox text-red-600"><span>Show Medical Grid</span></label>
+                            <label class="flex items-center text-sm gap-2 cursor-pointer"><input type="checkbox" id="ecgDetails" class="form-checkbox text-red-600"><span>Patient Info</span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="upload-zone border-2 border-dashed border-red-300 bg-red-50/30 rounded-lg p-8 text-center cursor-pointer hover:border-red-500 hover:bg-red-50 transition" id="ecg-dropzone" onclick="document.getElementById('ecgInput').click()">
+                    <div class="upload-icon text-red-300 mb-2 flex justify-center"><i data-feather="file-text" class="w-10 h-10"></i></div>
+                    <h4 class="font-bold text-gray-700">Drop ECG File Here</h4>
+                    <p class="text-sm text-gray-500 mb-4">Supported: .ecg, .txt, .csv</p>
+                    <input type="file" id="ecgInput" class="hidden" accept=".ecg,.txt,.csv,.dat,.dcm">
+                    <div class="flex justify-center"><button onclick="document.getElementById('ecgInput').click(); event.stopPropagation();" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2 shadow-lg"><i data-feather="upload"></i> Select File</button></div>
+                </div>
+                <div id="ecgPreview" class="mt-4 hidden p-3 bg-white border border-gray-200 rounded flex justify-between items-center">
+                    <div class="flex items-center gap-3"><div class="bg-red-100 p-2 rounded"><i data-feather="file" class="text-red-600 w-4 h-4"></i></div><span id="ecgFilename" class="text-sm font-bold text-gray-700 truncate max-w-[200px]">file.ecg</span></div>
+                    <button onclick="processECG()" class="px-4 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700" id="ecgAnalyzeBtn">Analyze</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [BARU] LIVE SKIN MODAL (KHUSUS) -->
+    <div id="liveSkinModal" class="modal fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50">
+        <div class="modal-content bg-white rounded-lg p-0 w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-[80vh]">
+            
+            <!-- Kiri: Kamera -->
+            <div class="w-full md:w-2/3 bg-black relative flex flex-col items-center justify-center">
+                <video id="liveVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+                <canvas id="liveCanvas" class="hidden w-full h-full object-cover"></canvas>
+                
+                <!-- Overlay Guide -->
+                <div class="absolute inset-0 border-2 border-white/30 pointer-events-none flex items-center justify-center">
+                    <div class="border-2 border-white/50 border-dashed w-64 h-64 rounded-lg"></div>
+                </div>
+
+                <!-- Controls -->
+                <div class="absolute bottom-6 w-full flex justify-center gap-4 z-10" id="liveControls">
+                    <button onclick="captureLiveSkin()" class="w-16 h-16 bg-white rounded-full border-4 border-gray-300 hover:border-green-500 shadow-xl flex items-center justify-center group">
+                        <div class="w-12 h-12 bg-green-500 rounded-full group-hover:scale-90 transition"></div>
+                    </button>
+                </div>
+                <div class="absolute top-4 right-4 z-10">
+                    <button onclick="closeModal('liveSkinModal')" class="bg-black/50 text-white p-2 rounded-full hover:bg-red-600 transition"><i data-feather="x"></i></button>
+                </div>
+            </div>
+
+            <!-- Kanan: Info & Hasil -->
+            <div class="w-full md:w-1/3 bg-white p-6 overflow-y-auto flex flex-col">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Analisis Kulit Live</h3>
+                <p class="text-sm text-gray-500 mb-4">Arahkan kamera ke area kulit yang ingin diperiksa. Pastikan pencahayaan cukup.</p>
+                
+                <div class="mb-4">
+                    <label class="text-xs font-bold text-gray-500">Pilih Kamera:</label>
+                    <select id="liveCameraSelect" class="w-full border rounded p-2 text-sm mt-1" onchange="startLiveCamera(this.value)">
+                        <option value="">Default Camera</option>
+                    </select>
+                </div>
+
+                <!-- Placeholder Hasil -->
+                <div id="liveResultPlaceholder" class="flex-grow flex items-center justify-center border-2 border-dashed border-gray-200 rounded-lg text-gray-400 text-sm p-4 text-center">
+                    Hasil analisis akan muncul di sini setelah capture.
+                </div>
+                
+                <!-- Container Hasil Nyata (Hidden Awal) -->
+                <div id="liveResultContainer" class="hidden flex-col gap-4">
+                    <!-- Hasil akan diinject di sini oleh Script -->
+                </div>
+                
+                <div id="liveActionBtns" class="hidden mt-4 pt-4 border-t gap-2">
+                    <button onclick="resetLiveCamera()" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-bold">Ulangi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Utils -->
+    <input type="file" id="batchInput" hidden multiple accept=".dcm,image/*">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

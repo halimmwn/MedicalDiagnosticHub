@@ -1,0 +1,11 @@
+# Ignore virtual environment
+venv/
+
+# Ignore result folders
+results/
+results/*
+
+# Ignore uploaded files folders
+uploads/
+static/uploads/
+static/uploads/original/
